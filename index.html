@@ -172,6 +172,20 @@
     límites certificados para una máquina industrial real.
   </p>
 
+  <section class="panel" style="max-width: 1200px; margin: 24px auto;">
+    <h2>Evolución de la temperatura</h2>
+    <p>Comparación de la temperatura a lo largo del tiempo.</p>
+
+    <canvas id="grafica-temperatura" width="1100" height="300"
+      style="width: 100%; height: 300px;"></canvas>
+
+    <p style="font-size: 14px; color: #64748b;">
+      Línea gris: máquina SIN IA. Línea morada: máquina CON IA.
+      Líneas horizontales: umbrales de alerta y fallo.
+    </p>
+  </section>
+
+  
   <script>
     // 1. Variables iniciales
     let rpmSinIA = 1400;

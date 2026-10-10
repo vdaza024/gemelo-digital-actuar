@@ -197,6 +197,23 @@
 
     // Número máximo de puntos que mostraremos
     const maxPuntos = 40;
+    
+    // Calcular la tendencia de los últimos registros
+    function calcularTendencia(historial) {
+      if (historial.length < 5) {
+        return null;
+      }
+
+      const ultimos = historial.slice(-5);
+
+      // Comparar la primera y la última medición
+      const primera = ultimos[0];
+      const ultima = ultimos[ultimos.length - 1];
+
+      // Cambio medio de temperatura por segundo
+      return (ultima - primera) / (ultimos.length - 1);
+    }
+
 
 
     let falloSinIA = false;

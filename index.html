@@ -190,6 +190,14 @@
     // 1. Variables iniciales
     let rpmSinIA = 1400;
     let rpmConIA = 1400;
+    
+    // Historial de temperaturas para la gráfica
+    const historialTempSinIA = [];
+    const historialTempConIA = [];
+
+    // Número máximo de puntos que mostraremos
+    const maxPuntos = 40;
+
 
     let falloSinIA = false;
     let falloConIA = false;

@@ -7,6 +7,10 @@
   <title>Gemelo Digital Industrial</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -62,10 +66,34 @@
     }
 
     .estado {
-      padding: 10px;
+      padding: 12px;
       border-radius: 6px;
       background: #e2e8f0;
       margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .estado.alerta {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .estado.fallo {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .estado.actuando {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+
+    .nota {
+      max-width: 1200px;
+      margin: 24px auto 0;
+      color: #64748b;
+      font-size: 14px;
+      text-align: center;
     }
 
     @media (max-width: 700px) {
@@ -91,7 +119,7 @@
 
     <section class="panel sin-ia">
       <h2>Escenario 1: SIN IA</h2>
-      <p>La máquina funciona sin intervención predictiva.</p>
+      <p>La máquina funciona sin intervención automática.</p>
 
       <div class="indicador">
         <div>Revoluciones por minuto (RPM)</div>
@@ -100,22 +128,22 @@
 
       <div class="indicador">
         <div>Temperatura</div>
-        <div class="valor" id="temp-sin-ia">64 °C</div>
+        <div class="valor" id="temp-sin-ia">59.2 °C</div>
       </div>
 
       <div class="indicador">
         <div>Vibración</div>
-        <div class="valor" id="vib-sin-ia">2.0 mm/s</div>
+        <div class="valor" id="vib-sin-ia">2.7 mm/s</div>
       </div>
 
       <div class="estado" id="estado-sin-ia">
-        Estado: esperando simulación
+        Estado: iniciando simulación
       </div>
     </section>
 
     <section class="panel con-ia">
       <h2>Escenario 2: CON IA</h2>
-      <p>La IA analiza las variables y podrá actuar ante riesgos.</p>
+      <p>El sistema detecta riesgos e interviene automáticamente.</p>
 
       <div class="indicador">
         <div>Revoluciones por minuto (RPM)</div>
@@ -124,120 +152,163 @@
 
       <div class="indicador">
         <div>Temperatura</div>
-        <div class="valor" id="temp-con-ia">64 °C</div>
+        <div class="valor" id="temp-con-ia">59.2 °C</div>
       </div>
 
       <div class="indicador">
         <div>Vibración</div>
-        <div class="valor" id="vib-con-ia">2.0 mm/s</div>
+        <div class="valor" id="vib-con-ia">2.7 mm/s</div>
       </div>
 
       <div class="estado" id="estado-con-ia">
-        Estado: esperando simulación
+        Estado: iniciando simulación
       </div>
     </section>
 
   </main>
-  
-<script>
-  // Velocidad inicial de cada máquina
-  let rpmSinIA = 1400;
-  let rpmConIA = 1400;
 
-  // Contador de tiempo de la simulación
-  let tiempo = 0;
+  <p class="nota">
+    Simulación educativa: los umbrales son hipotéticos y no representan
+    límites certificados para una máquina industrial real.
+  </p>
 
-  // Actualizar la simulación cada segundo
-  setInterval(function() {
-    tiempo++;
+  <script>
+    // 1. Variables iniciales
+    let rpmSinIA = 1400;
+    let rpmConIA = 1400;
 
-  
-    // La máquina sin IA aumenta continuamente su velocidad
-    rpmSinIA = Math.min(3600, rpmSinIA + 100);
-
+    let falloSinIA = false;
+    let falloConIA = false;
     let iaActuando = false;
-    // La IA evalúa el riesgo de su máquina
-    const temperaturaActualIA =
-      25 + (rpmConIA / 3600) * 88;
 
-    const vibracionActualIA =
-      1.6 + Math.pow(rpmConIA / 3600, 2) * 7.5;
+    // 2. Actualizar la simulación cada segundo
+    setInterval(function () {
 
-    // Si existe riesgo, la IA reduce las RPM
-    if (
-      temperaturaActualIA >= 78 ||
-      vibracionActualIA >= 4.5
-    ) {
-      rpmConIA = Math.max(800, rpmConIA - 300);
-      iaActuando = true;
-    } else {
-      // Si no hay riesgo, aumenta las RPM gradualmente
-      rpmConIA = Math.min(3600, rpmConIA + 100);
-    }
+      // SIN IA: aumenta la velocidad hasta alcanzar un fallo
+      if (!falloSinIA) {
+        rpmSinIA = Math.min(3600, rpmSinIA + 100);
+      }
 
+      // CON IA: calcula las condiciones antes de decidir
+      const temperaturaAntesIA =
+        25 + (rpmConIA / 3600) * 88;
 
-    // Mostrar los valores en la página
-    document.getElementById("rpm-sin-ia").textContent =
-      rpmSinIA;
+      const vibracionAntesIA =
+        1.6 + Math.pow(rpmConIA / 3600, 2) * 7.5;
 
-    document.getElementById("rpm-con-ia").textContent =
-      rpmConIA;
-    // Calcular temperatura según las RPM
-const temperaturaSinIA = 25 + (rpmSinIA / 3600) * 88;
-const temperaturaConIA = 25 + (rpmConIA / 3600) * 88;
+      iaActuando = false;
 
-// Calcular vibración según las RPM
-const vibracionSinIA = 1.6 + Math.pow(rpmSinIA / 3600, 2) * 7.5;
-const vibracionConIA = 1.6 + Math.pow(rpmConIA / 3600, 2) * 7.5;
+      if (!falloConIA) {
+        if (
+          temperaturaAntesIA >= 78 ||
+          vibracionAntesIA >= 4.5
+        ) {
+          // Intervención preventiva: reduce la velocidad
+          rpmConIA = Math.max(800, rpmConIA - 300);
+          iaActuando = true;
+        } else {
+          // En condiciones seguras, aumenta gradualmente
+          rpmConIA = Math.min(3600, rpmConIA + 100);
+        }
+      }
 
-// Mostrar temperatura
-document.getElementById("temp-sin-ia").textContent =
-  temperaturaSinIA.toFixed(1) + " °C";
+      // 3. Calcular las variables de ambas máquinas
+      const temperaturaSinIA =
+        25 + (rpmSinIA / 3600) * 88;
 
-document.getElementById("temp-con-ia").textContent =
-  temperaturaConIA.toFixed(1) + " °C";
+      const temperaturaConIA =
+        25 + (rpmConIA / 3600) * 88;
 
-// Mostrar vibración
-document.getElementById("vib-sin-ia").textContent =
-  vibracionSinIA.toFixed(1) + " mm/s";
+      const vibracionSinIA =
+        1.6 + Math.pow(rpmSinIA / 3600, 2) * 7.5;
 
-document.getElementById("vib-con-ia").textContent =
-  vibracionConIA.toFixed(1) + " mm/s";
-    
-  
+      const vibracionConIA =
+        1.6 + Math.pow(rpmConIA / 3600, 2) * 7.5;
 
-    // Evaluar el riesgo de la máquina sin IA
-    let estadoSinIA = "Funcionamiento normal";
+      // 4. Evaluar el estado SIN IA
+      let estadoSinIA = "Funcionamiento normal";
 
-    if (temperaturaSinIA >= 92 || vibracionSinIA >= 8.5) {
-      estadoSinIA = "FALLO: máquina detenida";
-    } else if (temperaturaSinIA >= 80 || vibracionSinIA >= 5.5) {
-      estadoSinIA = "ALERTA: riesgo detectado";
-    }
+      if (
+        temperaturaSinIA >= 92 ||
+        vibracionSinIA >= 8.5
+      ) {
+        falloSinIA = true;
+        estadoSinIA = "FALLO: máquina detenida";
+      } else if (
+        temperaturaSinIA >= 80 ||
+        vibracionSinIA >= 5.5
+      ) {
+        estadoSinIA = "ALERTA: riesgo detectado";
+      }
 
-    // Evaluar el riesgo de la máquina con IA
-    let estadoConIA = "Funcionamiento normal";
+      // 5. Evaluar el estado CON IA
+      let estadoConIA = "Funcionamiento normal";
 
-    if (temperaturaConIA >= 92 || vibracionConIA >= 8.5) {
-      estadoConIA = "FALLO: máquina detenida";
-    } else if (temperaturaConIA >= 80 || vibracionConIA >= 5.5) {
-      estadoConIA = "ALERTA: riesgo detectado";
-    } else if (iaActuando) {
-      estadoConIA = "IA ACTUANDO: reduciendo RPM";
-    }
+      if (
+        temperaturaConIA >= 92 ||
+        vibracionConIA >= 8.5
+      ) {
+        falloConIA = true;
+        estadoConIA = "FALLO: máquina detenida";
+      } else if (
+        temperaturaConIA >= 80 ||
+        vibracionConIA >= 5.5
+      ) {
+        estadoConIA = "ALERTA: riesgo detectado";
+      } else if (iaActuando) {
+        estadoConIA = "IA ACTUANDO: reduciendo RPM";
+      }
 
-    // Mostrar los estados en la interfaz
-    document.getElementById("estado-sin-ia").textContent =
-      "Estado: " + estadoSinIA;
+      // 6. Mostrar los valores en pantalla
+      document.getElementById("rpm-sin-ia").textContent =
+        rpmSinIA;
 
-    document.getElementById("estado-con-ia").textContent =
-      "Estado: " + estadoConIA;
+      document.getElementById("rpm-con-ia").textContent =
+        rpmConIA;
 
+      document.getElementById("temp-sin-ia").textContent =
+        temperaturaSinIA.toFixed(1) + " °C";
 
+      document.getElementById("temp-con-ia").textContent =
+        temperaturaConIA.toFixed(1) + " °C";
 
-  }, 1000);
-</script>
+      document.getElementById("vib-sin-ia").textContent =
+        vibracionSinIA.toFixed(1) + " mm/s";
+
+      document.getElementById("vib-con-ia").textContent =
+        vibracionConIA.toFixed(1) + " mm/s";
+
+      // 7. Actualizar los mensajes y sus estilos
+      const elementoEstadoSinIA =
+        document.getElementById("estado-sin-ia");
+
+      const elementoEstadoConIA =
+        document.getElementById("estado-con-ia");
+
+      elementoEstadoSinIA.textContent =
+        "Estado: " + estadoSinIA;
+
+      elementoEstadoConIA.textContent =
+        "Estado: " + estadoConIA;
+
+      elementoEstadoSinIA.className = "estado";
+      elementoEstadoConIA.className = "estado";
+
+      if (falloSinIA) {
+        elementoEstadoSinIA.classList.add("fallo");
+      } else if (estadoSinIA.startsWith("ALERTA")) {
+        elementoEstadoSinIA.classList.add("alerta");
+      }
+
+      if (falloConIA) {
+        elementoEstadoConIA.classList.add("fallo");
+      } else if (estadoConIA.startsWith("ALERTA")) {
+        elementoEstadoConIA.classList.add("alerta");
+      } else if (iaActuando) {
+        elementoEstadoConIA.classList.add("actuando");
+      }
+
+    }, 1000);
+  </script>
 </body>
 </html>
-
-

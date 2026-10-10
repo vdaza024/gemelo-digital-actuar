@@ -417,19 +417,6 @@
       ctx.fillStyle = "#475569";
       ctx.textAlign = "center";
 
-      const marcasTiempo = [0, 10, 20, 30, 39];
-
-      marcasTiempo.forEach(function (segundo) {
-        const x = 55 + (segundo / (maxPuntos - 1)) * (ancho - 55);
-
-        ctx.beginPath();
-        ctx.strokeStyle = "#94a3b8";
-        ctx.moveTo(x, alto - 25);
-        ctx.lineTo(x, alto - 20);
-        ctx.stroke();
-
-        ctx.fillText(segundo + " s", x, alto - 5);
-      });
 
       // Título del eje horizontal
       ctx.font = "bold 13px Arial";

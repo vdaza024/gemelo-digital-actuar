@@ -404,10 +404,31 @@
       ctx.fillStyle = "#b91c1c";
       ctx.fillText("Fallo: 92 °C", ancho - 130, posicionY(92) - 8);
       
-      // Etiquetas del eje horizontal: tiempo en segundos
+  
+      // Eje horizontal: tiempo en segundos
       ctx.font = "13px Arial";
       ctx.fillStyle = "#475569";
       ctx.textAlign = "center";
+
+      const marcasTiempo = [0, 10, 20, 30, 39];
+
+      marcasTiempo.forEach(function (segundo) {
+        const x = 55 + (segundo / (maxPuntos - 1)) * (ancho - 55);
+
+        ctx.beginPath();
+        ctx.strokeStyle = "#94a3b8";
+        ctx.moveTo(x, alto - 25);
+        ctx.lineTo(x, alto - 20);
+        ctx.stroke();
+
+        ctx.fillText(segundo + " s", x, alto - 5);
+      });
+
+      // Título del eje horizontal
+      ctx.font = "bold 13px Arial";
+      ctx.fillText("Tiempo", ancho / 2, alto - 1);
+
+      ctx.textAlign = "left";
 
       const marcasTiempo = [0, 10, 20, 30];
 

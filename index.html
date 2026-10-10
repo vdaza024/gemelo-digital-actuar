@@ -1,559 +1,114 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gemelo Digital Industrial</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 30px;
-      background: #f1f5f9;
-      color: #1e293b;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    .descripcion {
-      text-align: center;
-      color: #64748b;
-      margin-bottom: 30px;
-    }
-
-    .contenedor {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .panel {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      border: 1px solid #cbd5e1;
-    }
-
-    .sin-ia {
-      border-top: 5px solid #64748b;
-    }
-
-    .con-ia {
-      border-top: 5px solid #7c3aed;
-    }
-
-    .indicador {
-      background: #f8fafc;
-      padding: 16px;
-      margin-top: 16px;
-      border-radius: 8px;
-    }
-
-    .valor {
-      font-size: 28px;
-      font-weight: bold;
-      margin-top: 8px;
-    }
-
-    .estado {
-      padding: 12px;
-      border-radius: 6px;
-      background: #e2e8f0;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-
-    .estado.alerta {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .estado.fallo {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .estado.actuando {
-      background: #ede9fe;
-      color: #5b21b6;
-    }
-
-    .nota {
-      max-width: 1200px;
-      margin: 24px auto 0;
-      color: #64748b;
-      font-size: 14px;
-      text-align: center;
-    }
-
-    @media (max-width: 700px) {
-      .contenedor {
-        grid-template-columns: 1fr;
-      }
-
-      body {
-        padding: 16px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemelo Digital Industrial</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;font-family:Arial,sans-serif;background:#f1f5f9;color:#1e293b}
+h1{text-align:center;margin:0 0 8px}.sub{text-align:center;color:#64748b;margin:0 0 24px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:1200px;margin:auto}
+.panel{background:#fff;border:1px solid #cbd5e1;border-radius:12px;padding:20px}.sin{border-top:5px solid #64748b}.con{border-top:5px solid #7c3aed}
+.metric{background:#f8fafc;padding:14px;margin-top:12px;border-radius:8px}.value{font-size:27px;font-weight:bold;margin-top:6px}
+.state{padding:11px;border-radius:7px;background:#e2e8f0;margin-top:16px;font-weight:bold}.normal{background:#dcfce7;color:#166534}.warn{background:#fef3c7;color:#92400e}.fail{background:#fee2e2;color:#991b1b}.act{background:#ede9fe;color:#5b21b6}
+.controls{text-align:center;margin:0 auto 20px}.controls button{padding:10px 16px;margin:4px;border:0;border-radius:7px;background:#334155;color:white;cursor:pointer;font-weight:bold}
+.chart{max-width:1200px;margin:22px auto}.chart canvas{display:block;width:100%;height:390px}.summary{padding:12px;background:#f8fafc;border-radius:8px;line-height:1.5;margin-top:10px}.note{text-align:center;color:#64748b;font-size:13px;max-width:1200px;margin:20px auto}
+@media(max-width:760px){body{padding:12px}.grid{grid-template-columns:1fr}.chart canvas{height:340px}}
+</style>
 </head>
-
 <body>
-  <h1>Gemelo Digital Industrial</h1>
-
-  <p class="descripcion">
-    Comparación de mantenimiento predictivo sin IA y con IA
-  </p>
-
-  <main class="contenedor">
-
-    <section class="panel sin-ia">
-      <h2>Escenario 1: SIN IA</h2>
-      <p>La máquina funciona sin intervención automática.</p>
-
-      <div class="indicador">
-        <div>Revoluciones por minuto (RPM)</div>
-        <div class="valor" id="rpm-sin-ia">1400</div>
-      </div>
-
-      <div class="indicador">
-        <div>Temperatura</div>
-        <div class="valor" id="temp-sin-ia">59.2 °C</div>
-      </div>
-
-      <div class="indicador">
-        <div>Vibración</div>
-        <div class="valor" id="vib-sin-ia">2.7 mm/s</div>
-      </div>
-
-      <div class="estado" id="estado-sin-ia">
-        Estado: iniciando simulación
-      </div>
-    </section>
-
-    <section class="panel con-ia">
-      <h2>Escenario 2: CON IA</h2>
-      <p>El sistema detecta riesgos e interviene automáticamente.</p>
-
-      <div class="indicador">
-        <div>Revoluciones por minuto (RPM)</div>
-        <div class="valor" id="rpm-con-ia">1400</div>
-      </div>
-
-      <div class="indicador">
-        <div>Temperatura</div>
-        <div class="valor" id="temp-con-ia">59.2 °C</div>
-      </div>
-
-      <div class="indicador">
-        <div>Vibración</div>
-        <div class="valor" id="vib-con-ia">2.7 mm/s</div>
-      </div>
-
-      <div class="estado" id="estado-con-ia">
-        Estado: iniciando simulación
-      </div>
-    </section>
-
-  </main>
-
-  <p class="nota">
-    Simulación educativa: los umbrales son hipotéticos y no representan
-    límites certificados para una máquina industrial real.
-  </p>
-
-  <section class="panel" style="max-width: 1200px; margin: 24px auto;">
-    <h2>Evolución de la temperatura</h2>
-    <p>Comparación de la temperatura a lo largo del tiempo.</p>
-
-    <canvas id="grafica-temperatura" width="1100" height="300"
-      style="width: 100%; height: 300px;"></canvas>
-
-    <p style="font-size: 14px; color: #64748b;">
-      Línea gris: máquina SIN IA. Línea morada: máquina CON IA.
-      Líneas horizontales: umbrales de alerta y fallo.
-    </p>
-  </section>
-
-  
-  <script>
-    // 1. Variables iniciales
-    let rpmSinIA = 1400;
-    let rpmConIA = 1400;
-    
-    // Historial de temperaturas para la gráfica
-    const historialTempSinIA = [];
-    const historialTempConIA = [];
-
-    // Número máximo de puntos que mostraremos
-    const maxPuntos = 40;
-    
-    // Calcular la tendencia de los últimos registros
-    function calcularTendencia(historial) {
-      if (historial.length < 5) {
-        return null;
-      }
-
-      const ultimos = historial.slice(-5);
-
-      // Comparar la primera y la última medición
-      const primera = ultimos[0];
-      const ultima = ultimos[ultimos.length - 1];
-
-      // Cambio medio de temperatura por segundo
-      return (ultima - primera) / (ultimos.length - 1);
-    }
-
-
-
-    let falloSinIA = false;
-    let falloConIA = false;
-    let iaActuando = false;
-
-    // 2. Actualizar la simulación cada segundo
-    setInterval(function () {
-
-      // SIN IA: aumenta la velocidad hasta alcanzar un fallo
-      if (!falloSinIA) {
-        rpmSinIA = Math.min(3600, rpmSinIA + 100);
-      }
-
-      // CON IA: calcula las condiciones antes de decidir
-      const temperaturaAntesIA =
-        25 + (rpmConIA / 3600) * 88;
-
-      const vibracionAntesIA =
-        1.6 + Math.pow(rpmConIA / 3600, 2) * 7.5;
-
-      iaActuando = false;
-
-      if (!falloConIA) {
-        if (
-          temperaturaAntesIA >= 78 ||
-          vibracionAntesIA >= 4.5
-        ) {
-          // Intervención preventiva: reduce la velocidad
-          rpmConIA = Math.max(800, rpmConIA - 300);
-          iaActuando = true;
-        } else {
-          // En condiciones seguras, aumenta gradualmente
-          rpmConIA = Math.min(3600, rpmConIA + 100);
-        }
-      }
-
-      // 3. Calcular las variables de ambas máquinas
-      const temperaturaSinIA =
-        25 + (rpmSinIA / 3600) * 88;
-
-      const temperaturaConIA =
-        25 + (rpmConIA / 3600) * 88;
-
-      const vibracionSinIA =
-        1.6 + Math.pow(rpmSinIA / 3600, 2) * 7.5;
-
-      const vibracionConIA =
-        1.6 + Math.pow(rpmConIA / 3600, 2) * 7.5;
-      
-      // Guardar las temperaturas de este segundo
-      historialTempSinIA.push(temperaturaSinIA);
-      historialTempConIA.push(temperaturaConIA);
-
-      // Conservar solo los últimos 40 registros
-      if (historialTempSinIA.length > maxPuntos) {
-        historialTempSinIA.shift();
-      }
-
-      if (historialTempConIA.length > maxPuntos) {
-        historialTempConIA.shift();
-      }
-
-
-      // 4. Evaluar el estado SIN IA
-      let estadoSinIA = "Funcionamiento normal";
-
-      if (
-        temperaturaSinIA >= 92 ||
-        vibracionSinIA >= 8.5
-      ) {
-        falloSinIA = true;
-        estadoSinIA = "FALLO: máquina detenida";
-      } else if (
-        temperaturaSinIA >= 80 ||
-        vibracionSinIA >= 5.5
-      ) {
-        estadoSinIA = "ALERTA: riesgo detectado";
-      }
-
-      // 5. Evaluar el estado CON IA
-      let estadoConIA = "Funcionamiento normal";
-
-      if (
-        temperaturaConIA >= 92 ||
-        vibracionConIA >= 8.5
-      ) {
-        falloConIA = true;
-        estadoConIA = "FALLO: máquina detenida";
-      } else if (
-        temperaturaConIA >= 80 ||
-        vibracionConIA >= 5.5
-      ) {
-        estadoConIA = "ALERTA: riesgo detectado";
-      } else if (iaActuando) {
-        estadoConIA = "IA ACTUANDO: reduciendo RPM";
-      }
-
-      // 6. Mostrar los valores en pantalla
-      document.getElementById("rpm-sin-ia").textContent =
-        rpmSinIA;
-
-      document.getElementById("rpm-con-ia").textContent =
-        rpmConIA;
-
-      document.getElementById("temp-sin-ia").textContent =
-        temperaturaSinIA.toFixed(1) + " °C";
-
-      document.getElementById("temp-con-ia").textContent =
-        temperaturaConIA.toFixed(1) + " °C";
-
-      document.getElementById("vib-sin-ia").textContent =
-        vibracionSinIA.toFixed(1) + " mm/s";
-
-      document.getElementById("vib-con-ia").textContent =
-        vibracionConIA.toFixed(1) + " mm/s";
-
-      // 7. Actualizar los mensajes y sus estilos
-      const elementoEstadoSinIA =
-        document.getElementById("estado-sin-ia");
-
-      const elementoEstadoConIA =
-        document.getElementById("estado-con-ia");
-
-      elementoEstadoSinIA.textContent =
-        "Estado: " + estadoSinIA;
-
-      elementoEstadoConIA.textContent =
-        "Estado: " + estadoConIA;
-
-      elementoEstadoSinIA.className = "estado";
-      elementoEstadoConIA.className = "estado";
-
-      if (falloSinIA) {
-        elementoEstadoSinIA.classList.add("fallo");
-      } else if (estadoSinIA.startsWith("ALERTA")) {
-        elementoEstadoSinIA.classList.add("alerta");
-      }
-
-      if (falloConIA) {
-        elementoEstadoConIA.classList.add("fallo");
-      } else if (estadoConIA.startsWith("ALERTA")) {
-        elementoEstadoConIA.classList.add("alerta");
-      } else if (iaActuando) {
-        elementoEstadoConIA.classList.add("actuando");
-      }
-
-      // Dibujar la gráfica de temperatura
-      const canvas = document.getElementById("grafica-temperatura");
-      const ctx = canvas.getContext("2d");
-
-      const ancho = canvas.width;
-      const alto = canvas.height;
-
-      // Limpiar el dibujo anterior
-      ctx.clearRect(0, 0, ancho, alto);
-
-      // Escala vertical: de 20 °C a 100 °C
-    
-      function posicionY(temperatura) {
-        const margenSuperior = 30;
-        const margenInferior = 30;
-        const altoUtil = alto - margenSuperior - margenInferior;
-
-        return alto - margenInferior -
-          ((temperatura - 20) / 80) * altoUtil;
-      }
-
-
-      // Dibujar los umbrales
-      ctx.setLineDash([6, 5]);
-      ctx.lineWidth = 2;
-
-      ctx.strokeStyle = "#d97706";
-      ctx.beginPath();
-      ctx.moveTo(0, posicionY(80));
-      ctx.lineTo(ancho, posicionY(80));
-      ctx.stroke();
-
-      ctx.strokeStyle = "#dc2626";
-      ctx.beginPath();
-      ctx.moveTo(0, posicionY(92));
-      ctx.lineTo(ancho, posicionY(92));
-      ctx.stroke();
-
-      ctx.setLineDash([]);
-      
-      // Dibujar el eje vertical y sus etiquetas
-      ctx.setLineDash([]);
-      ctx.strokeStyle = "#94a3b8";
-      ctx.lineWidth = 1;
-      ctx.fillStyle = "#475569";
-      ctx.font = "14px Arial";
-
-      [20, 40, 60, 80, 92, 100].forEach(function (valor) {
-        const y = posicionY(valor);
-
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(ancho, y);
-        ctx.strokeStyle = "#e2e8f0";
-        ctx.stroke();
-
-       ctx.fillText(valor + " °C", 8, y + 15);
-      });
-
-      // Etiquetas de los umbrales
-      ctx.font = "bold 14px Arial";
-      ctx.fillStyle = "#b45309";
-      ctx.fillText("Alerta: 80 °C", ancho - 140, posicionY(80) - 8);
-
-      ctx.fillStyle = "#b91c1c";
-      ctx.fillText("Fallo: 92 °C", ancho - 130, posicionY(92) - 8);
-      
-  
-      // Eje horizontal: tiempo en segundos
-      ctx.font = "13px Arial";
-      ctx.fillStyle = "#475569";
-      ctx.textAlign = "center";
-
-
-      // Título del eje horizontal
-      ctx.font = "bold 13px Arial";
-      ctx.fillText("Tiempo", ancho / 2, alto - 1);
-
-      ctx.textAlign = "left";
-
-      const marcasTiempo = [0, 10, 20, 30];
-
-      marcasTiempo.forEach(function (segundo) {
-        const x = 55 + (segundo / (maxPuntos - 1)) * (ancho - 55);
-
-        ctx.beginPath();
-        ctx.strokeStyle = "#94a3b8";
-        ctx.moveTo(x, alto - 5);
-        ctx.lineTo(x, alto);
-        ctx.stroke();
-
-        ctx.fillText(segundo + " s", x, alto - 12);
-      });
-
-      ctx.textAlign = "left";
-
-
-      // Leyenda de las dos máquinas
-      ctx.font = "14px Arial";
-      ctx.fillStyle = "#64748b";
-      ctx.fillRect(20, 12, 22, 4);
-      ctx.fillText("SIN IA", 48, 20);
-
-      ctx.fillStyle = "#7c3aed";
-      ctx.fillRect(120, 12, 22, 4);
-      ctx.fillText("CON IA", 148, 20);
-
-
-      // Dibujar una línea a partir de los datos del historial
-      function dibujarLinea(datos, color) {
-        if (datos.length < 2) return;
-
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-
-        datos.forEach(function (temperatura, indice) {
-          const x = (indice / (maxPuntos - 1)) * ancho;
-          const y = posicionY(temperatura);
-
-          if (indice === 0) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
-        });
-
-        ctx.stroke();
-      }
-
-      // Gris: máquina sin IA. Morado: máquina con IA.
-      dibujarLinea(historialTempSinIA, "#64748b");
-      dibujarLinea(historialTempConIA, "#7c3aed");
-
-   
-      // Proyectar la temperatura de la máquina CON IA
-      const tendenciaIA = calcularTendencia(historialTempConIA);
-
-      if (tendenciaIA !== null) {
-        const temperaturaActual =
-          historialTempConIA[historialTempConIA.length - 1];
-
-        const segundosPrediccion = 5;
-
-        // Limitar la proyección al rango visible de la gráfica
-        const temperaturaProyectada = Math.max(
-          20,
-          Math.min(100, temperaturaActual + tendenciaIA * segundosPrediccion)
-        );
-
-        // La predicción comienza en el último punto real
-        const xInicio =
-          55 + ((historialTempConIA.length - 1) / (maxPuntos - 1)) * (ancho - 55);
-
-        const xFinal = Math.min(
-          ancho - 10,
-          xInicio + (segundosPrediccion / (maxPuntos - 1)) * (ancho - 55)
-        );
-
-        const yInicio = posicionY(temperaturaActual);
-        const yFinal = posicionY(temperaturaProyectada);
-
-        // Dibujar el tramo proyectado
-        ctx.beginPath();
-        ctx.setLineDash([8, 5]);
-        ctx.strokeStyle = "#0f766e";
-        ctx.lineWidth = 3;
-        ctx.moveTo(xInicio, yInicio);
-        ctx.lineTo(xFinal, yFinal);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        // Marcar el punto estimado
-        ctx.beginPath();
-        ctx.arc(xFinal, yFinal, 5, 0, 2 * Math.PI);
-        ctx.fillStyle = "#0f766e";
-        ctx.fill();
-
-        // Mostrar la temperatura proyectada
-        ctx.font = "bold 13px Arial";
-        ctx.fillStyle = "#0f766e";
-
-        const textoProyeccion =
-          "Estimación: " + temperaturaProyectada.toFixed(1) + " °C";
-
-        ctx.fillText(
-          textoProyeccion,
-          Math.max(60, Math.min(xFinal - 150, ancho - 190)),
-          Math.max(45, yFinal - 12)
-        );
-      }
-
-    }, 1000);
-  </script>
+<h1>Gemelo Digital Industrial</h1>
+<p class="sub">Comparación de funcionamiento y mantenimiento predictivo sin IA y con IA</p>
+<div class="controls"><button id="reset">Reiniciar simulación</button><button id="pause">Pausar simulación</button></div>
+<main class="grid">
+<section class="panel sin"><h2>Escenario 1: SIN IA</h2><p>La máquina no ajusta automáticamente su velocidad ante el riesgo.</p>
+<div class="metric">Revoluciones por minuto (RPM)<div class="value" id="rpm0">1400</div></div>
+<div class="metric">Temperatura<div class="value" id="temp0">59.2 °C</div></div>
+<div class="metric">Vibración<div class="value" id="vib0">2.7 mm/s</div></div><div class="state" id="state0">Esperando simulación</div></section>
+<section class="panel con"><h2>Escenario 2: CON IA</h2><p>Un controlador automático reduce las RPM al detectar riesgo.</p>
+<div class="metric">Revoluciones por minuto (RPM)<div class="value" id="rpm1">1400</div></div>
+<div class="metric">Temperatura<div class="value" id="temp1">59.2 °C</div></div>
+<div class="metric">Vibración<div class="value" id="vib1">2.7 mm/s</div></div><div class="state" id="state1">Esperando simulación</div></section>
+</main>
+<section class="panel chart"><h2>Evolución y proyección de temperatura</h2><p class="sub">La línea verde discontinua estima los próximos segundos a partir de la tendencia reciente.</p><canvas id="chart" aria-label="Gráfica de temperatura"></canvas><div id="summary" class="summary">Recopilando mediciones para calcular una tendencia.</div></section>
+<p class="note">Simulación educativa: las ecuaciones y los umbrales son hipotéticos. La proyección es una extrapolación lineal sencilla, no una IA entrenada ni una garantía de comportamiento futuro.</p>
+<script>
+(() => {
+"use strict";
+const RPM_MIN=800,RPM_MAX=3600,T_ALERT=80,T_FAIL=92,V_ALERT=5.5,V_FAIL=8.5,N=40,HORIZON=5;
+const $=id=>document.getElementById(id);
+let rpm0=1400,rpm1=1400,fail0=false,fail1=false,t=0,timer=null,paused=false,h0=[],h1=[];
+const canvas=$("chart"),ctx=canvas.getContext("2d");
+function measure(rpm){const x=rpm/RPM_MAX;return {temp:25+x*88,vib:1.6+x*x*7.5};}
+function save(arr,v){arr.push({t,v});if(arr.length>N)arr.shift();}
+function slope(arr){
+ if(arr.length<5)return null;
+ const d=arr.slice(-5),xm=d.reduce((s,p)=>s+p.t,0)/d.length,ym=d.reduce((s,p)=>s+p.v,0)/d.length;
+ let num=0,den=0;d.forEach(p=>{num+=(p.t-xm)*(p.v-ym);den+=(p.t-xm)**2;});
+ return den?num/den:0;
+}
+function state(id,msg,type){const e=$(id);e.textContent="Estado: "+msg;e.className="state "+type;}
+function ui(){
+ const a=measure(rpm0),b=measure(rpm1);
+ $("rpm0").textContent=fail0?"0 (detenida)":rpm0;$("rpm1").textContent=fail1?"0 (detenida)":rpm1;
+ $("temp0").textContent=a.temp.toFixed(1)+" °C";$("temp1").textContent=b.temp.toFixed(1)+" °C";
+ $("vib0").textContent=a.vib.toFixed(1)+" mm/s";$("vib1").textContent=b.vib.toFixed(1)+" mm/s";
+ if(fail0)state("state0","FALLO: máquina detenida","fail");else if(a.temp>=T_ALERT||a.vib>=V_ALERT)state("state0","ALERTA: riesgo detectado","warn");else state("state0","Funcionamiento normal","normal");
+ if(fail1)state("state1","FALLO: máquina detenida","fail");else if(b.temp>=T_ALERT||b.vib>=V_ALERT)state("state1","ALERTA: riesgo detectado","warn");else if(b.temp>=78||b.vib>=4.5)state("state1","IA ACTUANDO: reduciendo RPM","act");else state("state1","Funcionamiento normal","normal");
+}
+function draw(){
+ const rect=canvas.getBoundingClientRect(),w=rect.width,h=rect.height;if(!w||!h)return;
+ const dpr=window.devicePixelRatio||1;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+ const m={l:60,r:18,t:38,b:44},pw=w-m.l-m.r,ph=h-m.t-m.b,min=20,max=105;
+ const xp=i=>m.l+(i/(N-1))*pw,yp=v=>m.t+(max-v)/(max-min)*ph;
+ ctx.font="12px Arial";ctx.textAlign="right";ctx.textBaseline="middle";
+ [20,40,60,80,92,100].forEach(v=>{let y=yp(v);ctx.beginPath();ctx.strokeStyle="#e2e8f0";ctx.moveTo(m.l,y);ctx.lineTo(w-m.r,y);ctx.stroke();ctx.fillStyle="#475569";ctx.fillText(v+" °C",m.l-8,y);});
+ function threshold(v,color,label){const y=yp(v);ctx.beginPath();ctx.setLineDash([6,5]);ctx.strokeStyle=color;ctx.lineWidth=2;ctx.moveTo(m.l,y);ctx.lineTo(w-m.r,y);ctx.stroke();ctx.setLineDash([]);ctx.textAlign="right";ctx.textBaseline="bottom";ctx.font="bold 12px Arial";ctx.fillStyle=color;ctx.fillText(label,w-m.r-4,y-5);}
+ threshold(T_ALERT,"#b45309","Alerta: 80 °C");threshold(T_FAIL,"#b91c1c","Fallo: 92 °C");
+ function series(arr,color){if(!arr.length)return;const start=arr[0].t;ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=3;ctx.lineJoin="round";arr.forEach((p,i)=>{let x=m.l+((p.t-start)/(N-1))*pw,y=yp(p.v);if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();}
+ series(h0,"#64748b");series(h1,"#7c3aed");
+ const s=slope(h1);let message="Recopilando al menos cinco mediciones para estimar una tendencia.";
+ if(s!==null&&h1.length){
+  const last=h1[h1.length-1],projected=last.v+s*HORIZON,clamped=Math.max(min,Math.min(max,projected));
+  const x1=m.l+((last.t-h1[0].t)/(N-1))*pw,x2=Math.min(w-m.r,x1+HORIZON/(N-1)*pw),y1=yp(last.v),y2=yp(clamped);
+  ctx.beginPath();ctx.setLineDash([8,5]);ctx.strokeStyle="#0f766e";ctx.lineWidth=3;ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();ctx.fillStyle="#0f766e";ctx.arc(x2,y2,4,0,Math.PI*2);ctx.fill();
+  ctx.textAlign="left";ctx.textBaseline="bottom";ctx.font="bold 12px Arial";ctx.fillStyle="#0f766e";ctx.fillText("Proyección: "+projected.toFixed(1)+" °C",Math.max(m.l+4,Math.min(x1,w-m.r-160)),Math.max(m.t+14,y2-7));
+  if(last.v<T_FAIL&&projected>=T_FAIL)message="Si la tendencia continúa, la estimación alcanza el umbral de fallo (92 °C) en unos cinco segundos. Es una extrapolación, no una certeza.";
+  else if(last.v<T_ALERT&&projected>=T_ALERT)message="Si la tendencia continúa, la estimación alcanza el umbral de alerta (80 °C) en unos cinco segundos. Es una extrapolación, no una certeza.";
+  else if(s>0.15)message="Tendencia ascendente estimada: "+s.toFixed(2)+" °C/s. La proyección supone que la tendencia reciente continúa; puede cambiar al variar las RPM.";
+  else if(s< -0.15)message="Tendencia descendente estimada: "+s.toFixed(2)+" °C/s. La proyección supone que la tendencia reciente continúa; puede cambiar al variar las RPM.";
+  else message="Tendencia reciente casi estable: "+s.toFixed(2)+" °C/s. La línea proyectada puede cambiar cuando el controlador ajuste las RPM.";
+ }
+ $("summary").textContent=message;
+ ctx.textAlign="left";ctx.textBaseline="middle";ctx.font="bold 13px Arial";
+ ctx.fillStyle="#64748b";ctx.fillRect(m.l+8,15,24,4);ctx.fillText("SIN IA",m.l+38,17);
+ ctx.fillStyle="#7c3aed";ctx.fillRect(m.l+105,15,24,4);ctx.fillText("CON IA",m.l+135,17);
+ ctx.beginPath();ctx.setLineDash([6,4]);ctx.strokeStyle="#0f766e";ctx.moveTo(m.l+210,17);ctx.lineTo(m.l+234,17);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#0f766e";ctx.fillText("Proyección",m.l+240,17);
+ ctx.font="12px Arial";ctx.fillStyle="#475569";ctx.textAlign="center";ctx.textBaseline="top";
+ [0,10,20,30].forEach(v=>{const x=m.l+v/(N-1)*pw;ctx.beginPath();ctx.strokeStyle="#94a3b8";ctx.moveTo(x,h-m.b+2);ctx.lineTo(x,h-m.b+7);ctx.stroke();ctx.fillText(v+" s",x,h-m.b+10);});
+ ctx.font="bold 12px Arial";ctx.fillText("Tiempo (ventana de 40 s)",m.l+pw/2,h-15);
+}
+function tick(){
+ t++;
+ if(!fail0)rpm0=Math.min(RPM_MAX,rpm0+100);
+ if(!fail1){const b=measure(rpm1);if(b.temp>=78||b.vib>=4.5)rpm1=Math.max(RPM_MIN,rpm1-300);else rpm1=Math.min(RPM_MAX,rpm1+100);}
+ const a=measure(rpm0),b=measure(rpm1);
+ if(!fail0&&(a.temp>=T_FAIL||a.vib>=V_FAIL)){fail0=true;rpm0=0;}
+ if(!fail1&&(b.temp>=T_FAIL||b.vib>=V_FAIL)){fail1=true;rpm1=0;}
+ save(h0,a.temp);save(h1,b.temp);ui();draw();
+}
+function start(){if(timer!==null)clearInterval(timer);timer=setInterval(tick,1000);}
+function reset(){
+ rpm0=1400;rpm1=1400;fail0=false;fail1=false;t=0;h0=[];h1=[];
+ const a=measure(rpm0),b=measure(rpm1);for(let i=0;i<5;i++){save(h0,a.temp);save(h1,b.temp);}
+ ui();draw();if(!paused)start();
+}
+$("reset").addEventListener("click",reset);
+$("pause").addEventListener("click",()=>{paused=!paused;$("pause").textContent=paused?"Reanudar simulación":"Pausar simulación";if(paused){clearInterval(timer);timer=null;}else start();});
+window.addEventListener("resize",draw);
+const a=measure(rpm0),b=measure(rpm1);save(h0,a.temp);save(h1,b.temp);ui();draw();start();
+})();
+</script>
 </body>
 </html>

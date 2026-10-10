@@ -5,9 +5,138 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gemelo Digital Industrial</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 30px;
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .descripcion {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 30px;
+    }
+
+    .contenedor {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .panel {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .sin-ia {
+      border-top: 5px solid #64748b;
+    }
+
+    .con-ia {
+      border-top: 5px solid #7c3aed;
+    }
+
+    .indicador {
+      background: #f8fafc;
+      padding: 16px;
+      margin-top: 16px;
+      border-radius: 8px;
+    }
+
+    .valor {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .estado {
+      padding: 10px;
+      border-radius: 6px;
+      background: #e2e8f0;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .contenedor {
+        grid-template-columns: 1fr;
+      }
+
+      body {
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
+
 <body>
   <h1>Gemelo Digital Industrial</h1>
-  <p>Simulación de mantenimiento predictivo con inteligencia artificial.</p>
+
+  <p class="descripcion">
+    Comparación de mantenimiento predictivo sin IA y con IA
+  </p>
+
+  <main class="contenedor">
+
+    <section class="panel sin-ia">
+      <h2>Escenario 1: SIN IA</h2>
+      <p>La máquina funciona sin intervención predictiva.</p>
+
+      <div class="indicador">
+        <div>Revoluciones por minuto (RPM)</div>
+        <div class="valor" id="rpm-sin-ia">1400</div>
+      </div>
+
+      <div class="indicador">
+        <div>Temperatura</div>
+        <div class="valor" id="temp-sin-ia">64 °C</div>
+      </div>
+
+      <div class="indicador">
+        <div>Vibración</div>
+        <div class="valor" id="vib-sin-ia">2.0 mm/s</div>
+      </div>
+
+      <div class="estado" id="estado-sin-ia">
+        Estado: esperando simulación
+      </div>
+    </section>
+
+    <section class="panel con-ia">
+      <h2>Escenario 2: CON IA</h2>
+      <p>La IA analiza las variables y podrá actuar ante riesgos.</p>
+
+      <div class="indicador">
+        <div>Revoluciones por minuto (RPM)</div>
+        <div class="valor" id="rpm-con-ia">1400</div>
+      </div>
+
+      <div class="indicador">
+        <div>Temperatura</div>
+        <div class="valor" id="temp-con-ia">64 °C</div>
+      </div>
+
+      <div class="indicador">
+        <div>Vibración</div>
+        <div class="valor" id="vib-con-ia">2.0 mm/s</div>
+      </div>
+
+      <div class="estado" id="estado-con-ia">
+        Estado: esperando simulación
+      </div>
+    </section>
+
+  </main>
 </body>
 </html>

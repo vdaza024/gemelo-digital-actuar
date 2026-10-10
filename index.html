@@ -355,9 +355,16 @@
       ctx.clearRect(0, 0, ancho, alto);
 
       // Escala vertical: de 20 °C a 100 °C
+    
       function posicionY(temperatura) {
-        return alto - ((temperatura - 20) / 80) * alto;
+        const margenSuperior = 30;
+        const margenInferior = 30;
+        const altoUtil = alto - margenSuperior - margenInferior;
+
+        return alto - margenInferior -
+          ((temperatura - 20) / 80) * altoUtil;
       }
+
 
       // Dibujar los umbrales
       ctx.setLineDash([6, 5]);
@@ -393,7 +400,7 @@
         ctx.strokeStyle = "#e2e8f0";
         ctx.stroke();
 
-        ctx.fillText(valor + " °C", 8, y - 5);
+       ctx.fillText(valor + " °C", 8, y + 15);
       });
 
       // Etiquetas de los umbrales

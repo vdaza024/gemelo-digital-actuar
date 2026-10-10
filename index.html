@@ -161,6 +161,27 @@
 
     document.getElementById("rpm-con-ia").textContent =
       rpmConIA;
+    // Calcular temperatura según las RPM
+const temperaturaSinIA = 25 + (rpmSinIA / 3600) * 88;
+const temperaturaConIA = 25 + (rpmConIA / 3600) * 88;
+
+// Calcular vibración según las RPM
+const vibracionSinIA = 1.6 + Math.pow(rpmSinIA / 3600, 2) * 7.5;
+const vibracionConIA = 1.6 + Math.pow(rpmConIA / 3600, 2) * 7.5;
+
+// Mostrar temperatura
+document.getElementById("temp-sin-ia").textContent =
+  temperaturaSinIA.toFixed(1) + " °C";
+
+document.getElementById("temp-con-ia").textContent =
+  temperaturaConIA.toFixed(1) + " °C";
+
+// Mostrar vibración
+document.getElementById("vib-sin-ia").textContent =
+  vibracionSinIA.toFixed(1) + " mm/s";
+
+document.getElementById("vib-con-ia").textContent =
+  vibracionConIA.toFixed(1) + " mm/s";
 
   }, 1000);
 </script>

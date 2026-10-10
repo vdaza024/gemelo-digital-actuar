@@ -151,9 +151,28 @@
   setInterval(function() {
     tiempo++;
 
-    // Ambas máquinas aumentan su velocidad
+  
+    // La máquina sin IA aumenta continuamente su velocidad
     rpmSinIA = Math.min(3600, rpmSinIA + 100);
-    rpmConIA = Math.min(3600, rpmConIA + 100);
+
+    // La IA evalúa el riesgo de su máquina
+    const temperaturaActualIA =
+      25 + (rpmConIA / 3600) * 88;
+
+    const vibracionActualIA =
+      1.6 + Math.pow(rpmConIA / 3600, 2) * 7.5;
+
+    // Si existe riesgo, la IA reduce las RPM
+    if (
+      temperaturaActualIA >= 78 ||
+      vibracionActualIA >= 4.5
+    ) {
+      rpmConIA = Math.max(800, rpmConIA - 300);
+    } else {
+      // Si no hay riesgo, aumenta las RPM gradualmente
+      rpmConIA = Math.min(3600, rpmConIA + 100);
+    }
+
 
     // Mostrar los valores en la página
     document.getElementById("rpm-sin-ia").textContent =

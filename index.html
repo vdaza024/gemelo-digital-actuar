@@ -155,6 +155,7 @@
     // La máquina sin IA aumenta continuamente su velocidad
     rpmSinIA = Math.min(3600, rpmSinIA + 100);
 
+    let iaActuando = false;
     // La IA evalúa el riesgo de su máquina
     const temperaturaActualIA =
       25 + (rpmConIA / 3600) * 88;
@@ -168,6 +169,7 @@
       vibracionActualIA >= 4.5
     ) {
       rpmConIA = Math.max(800, rpmConIA - 300);
+      iaActuando = true;
     } else {
       // Si no hay riesgo, aumenta las RPM gradualmente
       rpmConIA = Math.min(3600, rpmConIA + 100);
@@ -213,12 +215,9 @@ document.getElementById("vib-con-ia").textContent =
       vibracionConIA >= 5.5
     ) {
       estadoConIA = "ALERTA: riesgo detectado";
-    } else if (
-      temperaturaActualIA >= 78 ||
-      vibracionActualIA >= 4.5
-    ) {
-      estadoConIA = "IA ACTUANDO: reduciendo RPM";
-    }
+  } else if (iaActuando) {
+  estadoConIA = "IA ACTUANDO: reduciendo RPM";
+}
 
 
     // Evaluar el riesgo de la máquina con IA

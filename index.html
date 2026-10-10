@@ -246,6 +246,20 @@
 
       const vibracionConIA =
         1.6 + Math.pow(rpmConIA / 3600, 2) * 7.5;
+      
+      // Guardar las temperaturas de este segundo
+      historialTempSinIA.push(temperaturaSinIA);
+      historialTempConIA.push(temperaturaConIA);
+
+      // Conservar solo los últimos 40 registros
+      if (historialTempSinIA.length > maxPuntos) {
+        historialTempSinIA.shift();
+      }
+
+      if (historialTempConIA.length > maxPuntos) {
+        historialTempConIA.shift();
+      }
+
 
       // 4. Evaluar el estado SIN IA
       let estadoSinIA = "Funcionamiento normal";

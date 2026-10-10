@@ -376,6 +376,44 @@
       ctx.stroke();
 
       ctx.setLineDash([]);
+      
+      // Dibujar el eje vertical y sus etiquetas
+      ctx.setLineDash([]);
+      ctx.strokeStyle = "#94a3b8";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = "#475569";
+      ctx.font = "14px Arial";
+
+      [20, 40, 60, 80, 92, 100].forEach(function (valor) {
+        const y = posicionY(valor);
+
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(ancho, y);
+        ctx.strokeStyle = "#e2e8f0";
+        ctx.stroke();
+
+        ctx.fillText(valor + " °C", 8, y - 5);
+      });
+
+      // Etiquetas de los umbrales
+      ctx.font = "bold 14px Arial";
+      ctx.fillStyle = "#b45309";
+      ctx.fillText("Alerta: 80 °C", ancho - 140, posicionY(80) - 8);
+
+      ctx.fillStyle = "#b91c1c";
+      ctx.fillText("Fallo: 92 °C", ancho - 130, posicionY(92) - 8);
+
+      // Leyenda de las dos máquinas
+      ctx.font = "14px Arial";
+      ctx.fillStyle = "#64748b";
+      ctx.fillRect(20, 12, 22, 4);
+      ctx.fillText("SIN IA", 48, 20);
+
+      ctx.fillStyle = "#7c3aed";
+      ctx.fillRect(120, 12, 22, 4);
+      ctx.fillText("CON IA", 148, 20);
+
 
       // Dibujar una línea a partir de los datos del historial
       function dibujarLinea(datos, color) {

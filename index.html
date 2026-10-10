@@ -182,6 +182,32 @@ document.getElementById("vib-sin-ia").textContent =
 
 document.getElementById("vib-con-ia").textContent =
   vibracionConIA.toFixed(1) + " mm/s";
+    
+    // Evaluar el riesgo de la máquina sin IA
+    let estadoSinIA = "Funcionamiento normal";
+
+    if (temperaturaSinIA >= 92 || vibracionSinIA >= 8.5) {
+      estadoSinIA = "FALLO: máquina detenida";
+    } else if (temperaturaSinIA >= 80 || vibracionSinIA >= 5.5) {
+      estadoSinIA = "ALERTA: riesgo detectado";
+    }
+
+    // Evaluar el riesgo de la máquina con IA
+    let estadoConIA = "Funcionamiento normal";
+
+    if (temperaturaConIA >= 92 || vibracionConIA >= 8.5) {
+      estadoConIA = "FALLO: máquina detenida";
+    } else if (temperaturaConIA >= 80 || vibracionConIA >= 5.5) {
+      estadoConIA = "ALERTA: riesgo detectado";
+    }
+
+    // Mostrar los estados en la interfaz
+    document.getElementById("estado-sin-ia").textContent =
+      "Estado: " + estadoSinIA;
+
+    document.getElementById("estado-con-ia").textContent =
+      "Estado: " + estadoConIA;
+
 
   }, 1000);
 </script>

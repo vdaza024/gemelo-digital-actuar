@@ -202,14 +202,24 @@ document.getElementById("vib-sin-ia").textContent =
 document.getElementById("vib-con-ia").textContent =
   vibracionConIA.toFixed(1) + " mm/s";
     
-    // Evaluar el riesgo de la máquina sin IA
-    let estadoSinIA = "Funcionamiento normal";
+  
+    // Evaluar el riesgo y la actuación de la IA
+    let estadoConIA = "Funcionamiento normal";
 
-    if (temperaturaSinIA >= 92 || vibracionSinIA >= 8.5) {
-      estadoSinIA = "FALLO: máquina detenida";
-    } else if (temperaturaSinIA >= 80 || vibracionSinIA >= 5.5) {
-      estadoSinIA = "ALERTA: riesgo detectado";
+    if (temperaturaConIA >= 92 || vibracionConIA >= 8.5) {
+      estadoConIA = "FALLO: máquina detenida";
+    } else if (
+      temperaturaConIA >= 80 ||
+      vibracionConIA >= 5.5
+    ) {
+      estadoConIA = "ALERTA: riesgo detectado";
+    } else if (
+      temperaturaActualIA >= 78 ||
+      vibracionActualIA >= 4.5
+    ) {
+      estadoConIA = "IA ACTUANDO: reduciendo RPM";
     }
+
 
     // Evaluar el riesgo de la máquina con IA
     let estadoConIA = "Funcionamiento normal";

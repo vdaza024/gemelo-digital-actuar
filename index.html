@@ -138,5 +138,33 @@
     </section>
 
   </main>
+  
+<script>
+  // Velocidad inicial de cada máquina
+  let rpmSinIA = 1400;
+  let rpmConIA = 1400;
+
+  // Contador de tiempo de la simulación
+  let tiempo = 0;
+
+  // Actualizar la simulación cada segundo
+  setInterval(function() {
+    tiempo++;
+
+    // Ambas máquinas aumentan su velocidad
+    rpmSinIA = Math.min(3600, rpmSinIA + 100);
+    rpmConIA = Math.min(3600, rpmConIA + 100);
+
+    // Mostrar los valores en la página
+    document.getElementById("rpm-sin-ia").textContent =
+      rpmSinIA;
+
+    document.getElementById("rpm-con-ia").textContent =
+      rpmConIA;
+
+  }, 1000);
+</script>
 </body>
 </html>
+
+

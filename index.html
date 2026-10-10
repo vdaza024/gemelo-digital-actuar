@@ -344,6 +344,65 @@
         elementoEstadoConIA.classList.add("actuando");
       }
 
+      // Dibujar la gráfica de temperatura
+      const canvas = document.getElementById("grafica-temperatura");
+      const ctx = canvas.getContext("2d");
+
+      const ancho = canvas.width;
+      const alto = canvas.height;
+
+      // Limpiar el dibujo anterior
+      ctx.clearRect(0, 0, ancho, alto);
+
+      // Escala vertical: de 20 °C a 100 °C
+      function posicionY(temperatura) {
+        return alto - ((temperatura - 20) / 80) * alto;
+      }
+
+      // Dibujar los umbrales
+      ctx.setLineDash([6, 5]);
+      ctx.lineWidth = 2;
+
+      ctx.strokeStyle = "#d97706";
+      ctx.beginPath();
+      ctx.moveTo(0, posicionY(80));
+      ctx.lineTo(ancho, posicionY(80));
+      ctx.stroke();
+
+      ctx.strokeStyle = "#dc2626";
+      ctx.beginPath();
+      ctx.moveTo(0, posicionY(92));
+      ctx.lineTo(ancho, posicionY(92));
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+
+      // Dibujar una línea a partir de los datos del historial
+      function dibujarLinea(datos, color) {
+        if (datos.length < 2) return;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+
+        datos.forEach(function (temperatura, indice) {
+          const x = (indice / (maxPuntos - 1)) * ancho;
+          const y = posicionY(temperatura);
+
+          if (indice === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        });
+
+        ctx.stroke();
+      }
+
+      // Gris: máquina sin IA. Morado: máquina con IA.
+      dibujarLinea(historialTempSinIA, "#64748b");
+      dibujarLinea(historialTempConIA, "#7c3aed");
+
     }, 1000);
   </script>
 </body>

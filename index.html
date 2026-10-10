@@ -495,6 +495,42 @@
       dibujarLinea(historialTempSinIA, "#64748b");
       dibujarLinea(historialTempConIA, "#7c3aed");
 
+      // Proyectar la temperatura de la máquina CON IA
+      const tendenciaIA = calcularTendencia(historialTempConIA);
+
+      if (tendenciaIA !== null) {
+        const temperaturaActual =
+          historialTempConIA[historialTempConIA.length - 1];
+
+        const proyeccionSegundos = 5;
+        const temperaturaProyectada =
+          temperaturaActual + tendenciaIA * proyeccionSegundos;
+
+        // Dibujar una línea discontinua desde el último registro
+        const xInicio =
+          55 + ((historialTempConIA.length - 1) / (maxPuntos - 1)) * (ancho - 55);
+
+        const xFinal =
+          Math.min(ancho, xInicio + (proyeccionSegundos / (maxPuntos - 1)) * (ancho - 55));
+
+        const yInicio = posicionY(temperaturaActual);
+        const yFinal = posicionY(temperaturaProyectada);
+
+        ctx.beginPath();
+        ctx.setLineDash([8, 5]);
+        ctx.strokeStyle = "#0f766e";
+        ctx.lineWidth = 3;
+        ctx.moveTo(xInicio, yInicio);
+        ctx.lineTo(xFinal, yFinal);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Etiqueta de la proyección
+        ctx.font = "bold 13px Arial";
+        ctx.fillStyle = "#0f766e";
+        ctx.fillText("Proyección", Math.max(60, xFinal - 90), yFinal - 10);
+      }
+
     }, 1000);
   </script>
 </body>

@@ -495,6 +495,7 @@
       dibujarLinea(historialTempSinIA, "#64748b");
       dibujarLinea(historialTempConIA, "#7c3aed");
 
+   
       // Proyectar la temperatura de la máquina CON IA
       const tendenciaIA = calcularTendencia(historialTempConIA);
 
@@ -502,20 +503,27 @@
         const temperaturaActual =
           historialTempConIA[historialTempConIA.length - 1];
 
-        const proyeccionSegundos = 5;
-        const temperaturaProyectada =
-          temperaturaActual + tendenciaIA * proyeccionSegundos;
+        const segundosPrediccion = 5;
 
-        // Dibujar una línea discontinua desde el último registro
+        // Limitar la proyección al rango visible de la gráfica
+        const temperaturaProyectada = Math.max(
+          20,
+          Math.min(100, temperaturaActual + tendenciaIA * segundosPrediccion)
+        );
+
+        // La predicción comienza en el último punto real
         const xInicio =
           55 + ((historialTempConIA.length - 1) / (maxPuntos - 1)) * (ancho - 55);
 
-        const xFinal =
-          Math.min(ancho, xInicio + (proyeccionSegundos / (maxPuntos - 1)) * (ancho - 55));
+        const xFinal = Math.min(
+          ancho - 10,
+          xInicio + (segundosPrediccion / (maxPuntos - 1)) * (ancho - 55)
+        );
 
         const yInicio = posicionY(temperaturaActual);
         const yFinal = posicionY(temperaturaProyectada);
 
+        // Dibujar el tramo proyectado
         ctx.beginPath();
         ctx.setLineDash([8, 5]);
         ctx.strokeStyle = "#0f766e";
@@ -525,10 +533,24 @@
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Etiqueta de la proyección
+        // Marcar el punto estimado
+        ctx.beginPath();
+        ctx.arc(xFinal, yFinal, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = "#0f766e";
+        ctx.fill();
+
+        // Mostrar la temperatura proyectada
         ctx.font = "bold 13px Arial";
         ctx.fillStyle = "#0f766e";
-        ctx.fillText("Proyección", Math.max(60, xFinal - 90), yFinal - 10);
+
+        const textoProyeccion =
+          "Estimación: " + temperaturaProyectada.toFixed(1) + " °C";
+
+        ctx.fillText(
+          textoProyeccion,
+          Math.max(60, Math.min(xFinal - 150, ancho - 190)),
+          Math.max(45, yFinal - 12)
+        );
       }
 
     }, 1000);
